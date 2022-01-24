@@ -1,0 +1,98 @@
+version: '3.3'
+
+services:
+
+  consumer:
+    image:
+      consumer-image
+    container_name: consumer
+    networks:
+      - cloud
+    ports:
+      - 81:8081
+    links:
+      - rabbit
+    depends_on:
+      - rabbit
+      - producer
+    environment:
+      - "RABBIT_HOST=rabbit"
+      - "RABBIT_PORT=5672"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  producer:
+    image:
+      producer-image
+    container_name: producer
+    networks:
+      - cloud
+    ports:
+      - 80:8080
+    links:
+      - rabbit
+    depends_on:
+      - database
+      - rabbit
+    environment:
+      - "DB_URL=jdbc:postgresql://database:5432/pdfgenerator_db"
+      - "DB_USERNAME=postgres"
+      - "DB_PASSWORD=123"
+      - "RABBIT_HOST=rabbit"
+      - "RABBIT_PORT=5672"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  database:
+    image:
+      postgres
+    container_name: database
+    networks:
+      - cloud
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_DB: pdfgenerator_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+  rabbit:
+    image:
+      rabbitmq
+    container_name: rabbit
+    networks:
+      - cloud
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbit-volume
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+
+volumes:
+  pgdata:
+    external: true
+  rabbit-volume:
+    external: true
+
+networks:
+  cloud:
+    driver: bridge
+

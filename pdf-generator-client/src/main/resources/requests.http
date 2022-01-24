@@ -1,0 +1,30 @@
+POST localhost/signUp
+Content-Type: application/json
+
+{
+  "username": "densh2001",
+  "password": "123"
+}
+
+###
+
+POST localhost/signIn
+Content-Type: application/json
+
+{
+  "username": "densh2001",
+  "password": "123"
+}
+
+
+###
+
+POST localhost/docs
+Content-Type: application/json
+Access: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNjQzMDQ2NDAyLCJleHAiOjE2NDMxNDY0MDJ9.iM1IJ-TejZQFWcmm5H-D6TJ7I0HkcwPp6xcuqlwjLME
+
+{
+  "firstName": "Denis",
+  "lastName": "Shegay",
+  "type": "type2"
+}
